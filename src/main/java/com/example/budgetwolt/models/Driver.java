@@ -1,12 +1,18 @@
 package com.example.budgetwolt.models;
 
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 public class Driver extends BasicUser {
     private String driverLicense;
     private LocalDate dateOfBirth;

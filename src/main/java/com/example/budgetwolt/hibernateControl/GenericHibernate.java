@@ -27,4 +27,53 @@ public class GenericHibernate {
                 entityManager.close();
         }
     }
+
+    public <T> void update(T entity) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            entityManager.merge(entity);
+            entityManager.getTransaction().commit();
+        } catch(Exception e) {
+            // later
+        } finally {
+            if (entityManager != null)
+                entityManager.close();
+        }
+    }
+
+    public <T> void delete(T entity) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            T managedEntity = entityManager.merge(entity);
+            entityManager.remove(managedEntity);
+            entityManager.getTransaction().commit();
+        } catch(Exception e) {
+            System.out.println(e);
+        } finally {
+            if (entityManager != null)
+                entityManager.close();
+        }
+    }
+
+    public <T> T getEntityById(Class<T> entityClass, int id) {
+
+        T entity = null;
+
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            entity = entityManager.find(entityClass, id);
+            entityManager.getTransaction().commit();
+        } catch(Exception e) {
+            System.out.println("ERROR!");
+        } finally {
+            if (entityManager != null)
+                entityManager.close();
+        }
+
+        return entity;
+    }
 }

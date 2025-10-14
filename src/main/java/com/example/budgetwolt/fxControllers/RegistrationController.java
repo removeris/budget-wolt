@@ -106,8 +106,6 @@ public class RegistrationController implements Initializable {
             genericHibernate.create(basicUser);
         }
     }
-
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setRole(null);
