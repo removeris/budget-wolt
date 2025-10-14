@@ -1,6 +1,6 @@
 package com.example.budgetwolt.fxControllers;
 
-import com.example.budgetwolt.HelloApplication;
+import com.example.budgetwolt.Main;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -31,7 +30,7 @@ public class LoginController {
     }
 
     public void redirectToRegistrationForm(ActionEvent e) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("register-form.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("register-form.fxml"));
 
         Parent parent = fxmlLoader.load();
         RegistrationController registrationController = fxmlLoader.getController();

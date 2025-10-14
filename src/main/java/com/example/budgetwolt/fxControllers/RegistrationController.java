@@ -1,11 +1,10 @@
 package com.example.budgetwolt.fxControllers;
 
-import com.example.budgetwolt.HelloApplication;
+import com.example.budgetwolt.Main;
 import com.example.budgetwolt.hibernateControl.GenericHibernate;
 import com.example.budgetwolt.models.BasicUser;
 import com.example.budgetwolt.models.User;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,7 +60,7 @@ public class RegistrationController implements Initializable {
     }
 
     public void redirectToLoginForm(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-form.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login-form.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 600);
         Stage stage = (Stage) usernameField.getScene().getWindow();
         stage.setScene(scene);
