@@ -3,6 +3,11 @@ package com.example.budgetwolt.hibernateControl;
 import com.example.budgetwolt.models.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GenericHibernate {
     EntityManagerFactory entityManagerFactory;
@@ -75,5 +80,21 @@ public class GenericHibernate {
         }
 
         return entity;
+    }
+
+    public <T> List<T> getAllRecords(Class<T> entityClass) {
+        List<T> list = new ArrayList<>();
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            CriteriaQuery query = entityManager.getCriteriaBuilder().createQuery();
+            query.select(query.from(entityClass));
+            Query q = entityManager.createQuery(query);
+            list = q.getResultList();
+        } catch (Exception e) {
+            // alert
+        }
+
+        return list;
     }
 }

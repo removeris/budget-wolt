@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.MainViewController">
+   <children>
+      <TextArea layoutX="182.0" layoutY="48.0" prefHeight="200.0" prefWidth="200.0" promptText="The best main view ever" />
+   </children>
+</AnchorPane>
