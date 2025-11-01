@@ -28,14 +28,13 @@ public class LoginController {
 
     private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("budgetwolt");
     private CustomHibernate customHibernate = new CustomHibernate(entityManagerFactory);
+
     public void attemptLogin(ActionEvent e) throws IOException {
 
         String username = this.usernameField.getText();
         String psw = this.passwordField.getText();
 
         User user = customHibernate.getUserByCredentials(username, psw);
-
-        System.out.println(user);
 
         if(user == null) {
             System.out.printf("Unauthorized!");
@@ -44,6 +43,7 @@ public class LoginController {
 
             Parent parent = fxmlLoader.load();
             MainViewController mainViewController = fxmlLoader.getController();
+            mainViewController.initData(user.getName());
 
             Scene scene = new Scene(parent, 600, 600);
             Stage stage = (Stage) registerButton.getScene().getWindow();
