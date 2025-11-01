@@ -41,19 +41,19 @@
       </Pane>
       <Pane fx:id="clientPane" layoutX="257.0" layoutY="121.0" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <TextField fx:id="addressField" layoutX="26.0" layoutY="14.0" promptText="Address" />
             <Pane fx:id="restaurantPane" layoutY="39.0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TextField layoutX="26.0" layoutY="14.0" promptText="Work Hours" />
+                  <TextField fx:id="workingHours" layoutX="26.0" layoutY="14.0" promptText="Work Hours" />
                </children>
             </Pane>
-            <Pane fx:id="driverPane" prefHeight="200.0" prefWidth="200.0">
+            <Pane id="driver-pane" fx:id="driverPane" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TextField layoutX="26.0" layoutY="53.0" promptText="Driver License Number" />
-                  <DatePicker layoutX="26.0" layoutY="105.0" prefHeight="25.0" prefWidth="149.0" />
+                  <TextField fx:id="driverLicense" layoutX="26.0" layoutY="53.0" promptText="Driver License Number" />
+                  <DatePicker fx:id="driverDateOfBirth" layoutX="26.0" layoutY="105.0" prefHeight="25.0" prefWidth="149.0" />
                   <Label layoutX="26.0" layoutY="86.0" text="Date Of Birth" />
                </children>
             </Pane>
+            <TextField fx:id="addressField" layoutX="26.0" layoutY="14.0" promptText="Address" />
          </children>
       </Pane>
       <Button layoutX="226.0" layoutY="343.0" mnemonicParsing="false" onAction="#registerNewUser" prefHeight="25.0" prefWidth="149.0" text="Register" />

@@ -1,8 +1,11 @@
 package com.example.budgetwolt.fxControllers;
 
 import com.example.budgetwolt.Main;
+import com.example.budgetwolt.hibernateControl.CustomHibernate;
 import com.example.budgetwolt.hibernateControl.GenericHibernate;
 import com.example.budgetwolt.models.BasicUser;
+import com.example.budgetwolt.models.Driver;
+import com.example.budgetwolt.models.Restaurant;
 import com.example.budgetwolt.models.User;
 import jakarta.persistence.EntityManagerFactory;
 import javafx.event.ActionEvent;
@@ -10,15 +13,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class RegistrationController implements Initializable {
@@ -50,13 +51,19 @@ public class RegistrationController implements Initializable {
     public Pane clientPane;
     @FXML
     public Pane restaurantPane;
+    @FXML
+    public TextField driverLicense;
+    @FXML
+    public DatePicker driverDateOfBirth;
+    @FXML
+    public TextField workingHours;
 
     private EntityManagerFactory entityManagerFactory;
-    private GenericHibernate genericHibernate;
+    private CustomHibernate customHibernate;
 
     public void setData(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
-        this.genericHibernate = new GenericHibernate(entityManagerFactory);
+        this.customHibernate = new CustomHibernate(entityManagerFactory);
     }
 
     public void redirectToLoginForm(ActionEvent actionEvent) throws IOException {
@@ -86,7 +93,13 @@ public class RegistrationController implements Initializable {
         }
     }
 
-    public void registerNewUser(ActionEvent actionEvent) {
+    public void registerNewUser(ActionEvent actionEvent) throws IOException {
+
+        if (!customHibernate.isUniqueUsername(usernameField.getText())) {
+            FxUtil.generateAlert(Alert.AlertType.ERROR, "Error!", "Username is already in use!", "Please select a different username.");
+            return;
+        }
+
         if(userRadio.isSelected()) {
             User user = new User(
                     usernameField.getText(),
@@ -94,7 +107,7 @@ public class RegistrationController implements Initializable {
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText());
-            genericHibernate.create(user);
+            customHibernate.create(user);
         } else if (clientRadio.isSelected()) {
             BasicUser basicUser = new BasicUser(
                     usernameField.getText(),
@@ -103,9 +116,34 @@ public class RegistrationController implements Initializable {
                     surnameField.getText(),
                     phoneNumberField.getText(),
                     addressField.getText());
-            genericHibernate.create(basicUser);
+            customHibernate.create(basicUser);
+        } else if (courierRadio.isSelected()) {
+            Driver driver = new Driver(
+                    usernameField.getText(),
+                    passwordField.getText(),
+                    nameField.getText(),
+                    surnameField.getText(),
+                    phoneNumberField.getText(),
+                    addressField.getText(),
+                    driverLicense.getText(),
+                    driverDateOfBirth.getValue());
+            customHibernate.create(driver);
+        } else if (restaurantRadio.isSelected()) {
+            Restaurant restaurant = new Restaurant(
+                    usernameField.getText(),
+                    passwordField.getText(),
+                    nameField.getText(),
+                    surnameField.getText(),
+                    phoneNumberField.getText(),
+                    addressField.getText(),
+                    workingHours.getText());
+            customHibernate.create(restaurant);
         }
+
+        redirectToLoginForm(actionEvent);
     }
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         setRole(null);
