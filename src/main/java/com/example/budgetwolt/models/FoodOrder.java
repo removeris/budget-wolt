@@ -21,8 +21,9 @@ public class FoodOrder {
     private BasicUser buyer;
     @ManyToMany
     private List<Cuisine> items;
-
     private double price;
     @OneToMany
     private List<Chat> chat;
+    @ManyToOne
+    private Restaurant restaurant;
 }

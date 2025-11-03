@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.MainViewController">
+<AnchorPane prefHeight="587.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.MainViewController">
    <children>
       <Label fx:id="greetingMessage" layoutX="25.0" layoutY="14.0" style="-fx-font-weight: 700;" text="Placeholder">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
+      <TabPane layoutX="25.0" layoutY="44.0" prefHeight="503.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="usersTab" onSelectionChanged="#reloadTableData" text="Users">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="userTable" prefHeight="474.0" prefWidth="797.0">
+                          <columns>
+                            <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
+                            <TableColumn fx:id="userTypeCol" prefWidth="75.0" text="User Type" />
+                              <TableColumn fx:id="usernameCol" prefWidth="75.0" text="Username" />
+                              <TableColumn fx:id="passwordCol" prefWidth="75.0" text="Password" />
+                              <TableColumn fx:id="nameCol" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="surnameCol" prefWidth="75.0" text="Surname" />
+                              <TableColumn fx:id="addressCol" prefWidth="75.0" text="Address" />
+                              <TableColumn fx:id="phoneNumCol" prefWidth="75.0" text="Phone Number" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Orders">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>

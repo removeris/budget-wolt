@@ -20,6 +20,6 @@ module com.example.budgetwolt {
     opens com.example.budgetwolt.mainCLI to javafx.fxml;
     opens com.example.budgetwolt.models;
     exports com.example.budgetwolt.models to com.example.budgetwolt.mainCLI;
-    opens com.example.budgetwolt.fxControllers to javafx.fxml;
+    opens com.example.budgetwolt.fxControllers to javafx.fxml, javafx.base;
     exports com.example.budgetwolt.fxControllers to javafx.fxml;
 }

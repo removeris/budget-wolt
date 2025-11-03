@@ -43,9 +43,9 @@ public class LoginController {
 
             Parent parent = fxmlLoader.load();
             MainViewController mainViewController = fxmlLoader.getController();
-            mainViewController.initData(user.getName());
+            mainViewController.initData(entityManagerFactory, user);
 
-            Scene scene = new Scene(parent, 600, 600);
+            Scene scene = new Scene(parent, 900, 600);
             Stage stage = (Stage) registerButton.getScene().getWindow();
             stage.setScene(scene);
             stage.show();

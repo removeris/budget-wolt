@@ -92,7 +92,7 @@ public class GenericHibernate {
             Query q = entityManager.createQuery(query);
             list = q.getResultList();
         } catch (Exception e) {
-            // alert
+            e.printStackTrace();
         }
 
         return list;
