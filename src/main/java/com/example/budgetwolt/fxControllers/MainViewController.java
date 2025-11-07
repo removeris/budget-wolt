@@ -4,6 +4,8 @@ import com.example.budgetwolt.Main;
 import com.example.budgetwolt.hibernateControl.CustomHibernate;
 import com.example.budgetwolt.models.*;
 import jakarta.persistence.EntityManagerFactory;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,8 +15,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -123,7 +127,15 @@ public class MainViewController implements Initializable {
             foodList.setItems(FXCollections.observableList(food));
 
             ingredientsList.setItems(FXCollections.observableArrayList(Ingredients.values()));
-            ingredientsList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            ingredientsList.setCellFactory(CheckBoxListCell.forListView(item -> {
+                BooleanProperty selected = new SimpleBooleanProperty();
+
+                selected.addListener((obs, wasSelected, isNowSelected) -> {
+
+                });
+
+                return selected;
+            }));
         }
     }
 
@@ -156,12 +168,21 @@ public class MainViewController implements Initializable {
         userTable.getItems().addAll(data);
     }
 
+    public void createUser(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("register-form.fxml"));
 
-    public void updateUser(ActionEvent actionEvent) throws IOException {
-        redirectToUserCreation();
+        Parent parent = fxmlLoader.load();
+        RegistrationController registrationController = fxmlLoader.getController();
+        registrationController.setData(entityManagerFactory, null, false, true);
+
+        Scene scene = new Scene(parent, 600, 600);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+        reloadTableData();
     }
-
-    public void redirectToUserCreation() throws IOException {
+    public void updateUser(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("register-form.fxml"));
 
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
@@ -174,13 +195,17 @@ public class MainViewController implements Initializable {
         Scene scene = new Scene(parent, 600, 600);
         Stage stage = new Stage();
         stage.setScene(scene);
-        stage.show();
-    }
-
-    public void loadUserCreation(ActionEvent actionEvent) {
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+        reloadTableData();
     }
 
     public void deleteUser(ActionEvent actionEvent) {
+        UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
+        User userToUpdate = customHibernate.getEntityById(User.class, selectedUser.getId());
+
+        customHibernate.delete(userToUpdate);
+        reloadTableData();
     }
 
     public void deleteCuisine(ActionEvent actionEvent) {
@@ -207,4 +232,6 @@ public class MainViewController implements Initializable {
 
         reloadTableData();
     }
+
+
 }

@@ -7,6 +7,7 @@ import com.example.budgetwolt.models.BasicUser;
 import com.example.budgetwolt.models.Driver;
 import com.example.budgetwolt.models.Restaurant;
 import com.example.budgetwolt.models.User;
+import jakarta.persistence.Basic;
 import jakarta.persistence.EntityManagerFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class RegistrationController implements Initializable {
@@ -64,26 +66,40 @@ public class RegistrationController implements Initializable {
     public Button submitButton;
     @FXML
     public Button returnButton;
+    @FXML
+    public Pane radioPane;
 
     private EntityManagerFactory entityManagerFactory;
     private CustomHibernate customHibernate;
 
+    private User userToUpdate;
+    private boolean editMode;
+    private boolean isAdmin;
+
     public void setData(EntityManagerFactory entityManagerFactory, User userToUpdate, boolean isEditModeEnabled, boolean isAdmin) {
         this.entityManagerFactory = entityManagerFactory;
         this.customHibernate = new CustomHibernate(entityManagerFactory);
+
+        this.editMode = isEditModeEnabled;
+        this.isAdmin = isAdmin;
 
         if(isAdmin) {
             returnButton.setDisable(true);
             returnButton.setVisible(false);
             submitButton.setText("Save");
             formLabel.setText("Create new user");
+
         }
 
         if(isEditModeEnabled) {
             formLabel.setText("Edit user");
+            radioPane.setVisible(false);
 
-            fillUserData(userToUpdate);
+            this.userToUpdate = userToUpdate;
+            fillUserData(this.userToUpdate);
         }
+
+        this.setRole(null);
     }
 
     public void fillUserData(User userToUpdate) {
@@ -92,6 +108,15 @@ public class RegistrationController implements Initializable {
         nameField.setText(userToUpdate.getName());
         surnameField.setText(userToUpdate.getSurname());
         phoneNumberField.setText(userToUpdate.getPhoneNumber());
+
+        if(userToUpdate instanceof BasicUser client)
+            addressField.setText(client.getAddress());
+        if(userToUpdate instanceof Restaurant restaurant)
+            workingHours.setText(restaurant.getWorkHours());
+        if(userToUpdate instanceof Driver driver) {
+            driverLicense.setText(driver.getDriverLicense());
+            driverDateOfBirth.setValue(driver.getDateOfBirth());
+        }
     }
 
     public void redirectToLoginForm(ActionEvent actionEvent) throws IOException {
@@ -102,39 +127,64 @@ public class RegistrationController implements Initializable {
     }
 
     public void setRole(ActionEvent actionEvent) {
-        if (userRadio.isSelected()) {
+
+        boolean isUser = userRadio.isSelected();
+        boolean isRestaurant = restaurantRadio.isSelected() || userToUpdate instanceof Restaurant;
+        boolean isClient = clientRadio.isSelected() || userToUpdate instanceof BasicUser;
+        boolean isDriver = courierRadio.isSelected() || userToUpdate instanceof Driver;
+
+        if (isClient) {
+            clientPane.setVisible(true);
+            driverPane.setVisible(false);
+            restaurantPane.setVisible(false);
+        } else {
             driverPane.setVisible(false);
             clientPane.setVisible(false);
             restaurantPane.setVisible(false);
-        } else if (restaurantRadio.isSelected()) {
-            driverPane.setVisible(false);
+        }
+
+        if (isRestaurant) {
             clientPane.setVisible(true);
+            driverPane.setVisible(false);
             restaurantPane.setVisible(true);
-        } else if (clientRadio.isSelected()) {
-            driverPane.setVisible(false);
+        } if (isDriver) {
             clientPane.setVisible(true);
-            restaurantPane.setVisible(false);
-        } else if (courierRadio.isSelected()) {
             driverPane.setVisible(true);
-            clientPane.setVisible(true);
             restaurantPane.setVisible(false);
         }
     }
 
-    public void registerNewUser(ActionEvent actionEvent) throws IOException {
+    public void submitForm(ActionEvent actionEvent) throws IOException {
 
+        if (editMode) {
+            updateUser();
+        } else {
+            registerNewUser();
+        }
+
+        if(!isAdmin) {
+            redirectToLoginForm(actionEvent);
+        } else {
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.close();
+        }
+
+    }
+
+    public void registerNewUser() {
         if (!customHibernate.isUniqueUsername(usernameField.getText())) {
             FxUtil.generateAlert(Alert.AlertType.ERROR, "Error!", "Username is already in use!", "Please select a different username.");
             return;
         }
 
-        if(userRadio.isSelected()) {
+        if (userRadio.isSelected()) {
             User user = new User(
                     usernameField.getText(),
                     passwordField.getText(),
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText());
+            user.setAdmin(true);
             customHibernate.create(user);
         } else if (clientRadio.isSelected()) {
             BasicUser basicUser = new BasicUser(
@@ -167,8 +217,35 @@ public class RegistrationController implements Initializable {
                     workingHours.getText());
             customHibernate.create(restaurant);
         }
+    }
 
-        redirectToLoginForm(actionEvent);
+    public void updateUser() {
+
+        if(!Objects.equals(userToUpdate.getUsername(), usernameField.getText())) {
+            if (!customHibernate.isUniqueUsername(usernameField.getText())) {
+                FxUtil.generateAlert(Alert.AlertType.ERROR, "Error!", "Username is already in use!", "Please select a different username.");
+                return;
+            }
+        }
+
+        userToUpdate.setUsername(usernameField.getText());
+        userToUpdate.setPassword(passwordField.getText());
+        userToUpdate.setName(nameField.getText());
+        userToUpdate.setSurname(surnameField.getText());
+        userToUpdate.setPhoneNumber(phoneNumberField.getText());
+
+        if (userToUpdate instanceof BasicUser client) {
+            client.setAddress(addressField.getText());
+        }
+        if (userToUpdate instanceof Restaurant restaurant) {
+            restaurant.setWorkHours(workingHours.getText());
+        }
+        if (userToUpdate instanceof Driver driver) {
+            driver.setDriverLicense(driverLicense.getText());
+            driver.setDateOfBirth(driverDateOfBirth.getValue());
+        }
+
+        customHibernate.update(userToUpdate);
     }
 
 

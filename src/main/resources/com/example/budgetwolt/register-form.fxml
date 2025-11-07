@@ -12,23 +12,28 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.RegistrationController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.RegistrationController">
    <children>
       <Text fx:id="formLabel" layoutX="257.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register">
          <font>
             <Font size="24.0" />
          </font>
       </Text>
-      <Pane layoutX="47.0" layoutY="109.0" prefHeight="223.0" prefWidth="200.0">
+      <Pane layoutX="47.0" layoutY="92.0" prefHeight="269.0" prefWidth="200.0">
          <children>
             <TextField fx:id="usernameField" layoutX="26.0" layoutY="30.0" promptText="Username" />
-            <TextField fx:id="nameField" layoutX="26.0" layoutY="100.0" promptText="Name" />
-            <PasswordField fx:id="passwordField" layoutX="26.0" layoutY="66.0" promptText="Password" />
-            <TextField fx:id="surnameField" layoutX="26.0" layoutY="136.0" promptText="Surname" />
-            <TextField fx:id="phoneNumberField" layoutX="26.0" layoutY="174.0" promptText="Phone Number" />
+            <TextField fx:id="nameField" layoutX="26.0" layoutY="135.0" promptText="Name" />
+            <PasswordField fx:id="passwordField" layoutX="26.0" layoutY="79.0" promptText="Password" />
+            <TextField fx:id="surnameField" layoutX="26.0" layoutY="183.0" promptText="Surname" />
+            <TextField fx:id="phoneNumberField" layoutX="26.0" layoutY="230.0" promptText="Phone Number" />
+            <Label layoutX="26.0" layoutY="14.0" text="Username" />
+            <Label layoutX="26.0" layoutY="62.0" text="Password" />
+            <Label layoutX="28.0" layoutY="118.0" text="Name" />
+            <Label layoutX="28.0" layoutY="166.0" text="Surname" />
+            <Label layoutX="27.0" layoutY="213.0" text="Phone Number" />
          </children>
       </Pane>
-      <Pane layoutX="147.0" layoutY="59.0" prefHeight="56.0" prefWidth="307.0">
+      <Pane fx:id="radioPane" layoutX="147.0" layoutY="59.0" prefHeight="56.0" prefWidth="307.0">
          <children>
             <RadioButton fx:id="userRadio" layoutX="14.0" layoutY="20.0" mnemonicParsing="false" onAction="#setRole" selected="true" text="User">
                <toggleGroup>
@@ -39,24 +44,27 @@
             <RadioButton fx:id="courierRadio" layoutX="213.0" layoutY="20.0" mnemonicParsing="false" onAction="#setRole" text="Courier" toggleGroup="$userRole" />
          </children>
       </Pane>
-      <Pane fx:id="clientPane" layoutX="257.0" layoutY="121.0" prefHeight="200.0" prefWidth="200.0">
+      <Pane fx:id="clientPane" layoutX="257.0" layoutY="101.0" prefHeight="200.0" prefWidth="200.0">
          <children>
             <Pane fx:id="restaurantPane" layoutY="39.0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="workingHours" layoutX="26.0" layoutY="14.0" promptText="Work Hours" />
+                  <TextField fx:id="workingHours" layoutX="26.0" layoutY="35.0" promptText="Work Hours" />
+                  <Label layoutX="26.0" layoutY="20.0" text="Working Hours" />
                </children>
             </Pane>
-            <Pane id="driver-pane" fx:id="driverPane" prefHeight="200.0" prefWidth="200.0">
+            <TextField fx:id="addressField" layoutX="26.0" layoutY="23.0" promptText="Address" />
+            <Label layoutX="26.0" layoutY="6.0" text="Address" />
+            <Pane id="driver-pane" fx:id="driverPane" layoutY="58.0" prefHeight="136.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="driverLicense" layoutX="26.0" layoutY="53.0" promptText="Driver License Number" />
-                  <DatePicker fx:id="driverDateOfBirth" layoutX="26.0" layoutY="105.0" prefHeight="25.0" prefWidth="149.0" />
-                  <Label layoutX="26.0" layoutY="86.0" text="Date Of Birth" />
+                  <TextField fx:id="driverLicense" layoutX="26.0" layoutY="17.0" promptText="Driver License Number" />
+                  <DatePicker fx:id="driverDateOfBirth" layoutX="26.0" layoutY="65.0" prefHeight="25.0" prefWidth="149.0" />
+                  <Label layoutX="26.0" layoutY="46.0" text="Date Of Birth" />
+                  <Label layoutX="26.0" text="Driver's License" />
                </children>
             </Pane>
-            <TextField fx:id="addressField" layoutX="26.0" layoutY="14.0" promptText="Address" />
          </children>
       </Pane>
-      <Button fx:id="submitButton" layoutX="226.0" layoutY="343.0" mnemonicParsing="false" onAction="#registerNewUser" prefHeight="25.0" prefWidth="149.0" text="Register" />
+      <Button fx:id="submitButton" layoutX="232.0" layoutY="361.0" mnemonicParsing="false" onAction="#submitForm" prefHeight="25.0" prefWidth="149.0" text="Register" />
       <Button fx:id="returnButton" layoutX="21.0" layoutY="15.0" mnemonicParsing="false" onAction="#redirectToLoginForm" text="&lt;" />
    </children>
 </AnchorPane>

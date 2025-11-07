@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="587.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.MainViewController">
+<AnchorPane prefHeight="587.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.MainViewController">
    <children>
       <Label fx:id="greetingMessage" layoutX="25.0" layoutY="14.0" style="-fx-font-weight: 700;" text="Placeholder">
          <font>
@@ -41,9 +41,9 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                        <Button layoutX="373.0" layoutY="396.0" mnemonicParsing="false" onAction="#updateUser" text="Update" />
-                        <Button layoutX="252.0" layoutY="396.0" mnemonicParsing="false" onAction="#loadUserCreation" text="Create" />
-                        <Button layoutX="496.0" layoutY="396.0" mnemonicParsing="false" onAction="#deleteUser" text="Delete" />
+                        <Button layoutX="357.0" layoutY="396.0" mnemonicParsing="false" onAction="#updateUser" text="Update" />
+                        <Button layoutX="226.0" layoutY="396.0" mnemonicParsing="false" onAction="#createUser" text="Create New" />
+                        <Button layoutX="469.0" layoutY="396.0" mnemonicParsing="false" onAction="#deleteUser" text="Delete" />
                      </children></AnchorPane>
             </content>
           </Tab>
