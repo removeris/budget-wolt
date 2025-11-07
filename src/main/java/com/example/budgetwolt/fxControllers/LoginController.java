@@ -59,7 +59,7 @@ public class LoginController {
 
         Parent parent = fxmlLoader.load();
         RegistrationController registrationController = fxmlLoader.getController();
-        registrationController.setData(entityManagerFactory);
+        registrationController.setData(entityManagerFactory, null, false, false);
 
         Scene scene = new Scene(parent, 600, 600);
         Stage stage = (Stage) registerButton.getScene().getWindow();

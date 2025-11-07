@@ -14,7 +14,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.RegistrationController">
    <children>
-      <Text layoutX="257.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register">
+      <Text fx:id="formLabel" layoutX="257.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Register">
          <font>
             <Font size="24.0" />
          </font>
@@ -56,7 +56,7 @@
             <TextField fx:id="addressField" layoutX="26.0" layoutY="14.0" promptText="Address" />
          </children>
       </Pane>
-      <Button layoutX="226.0" layoutY="343.0" mnemonicParsing="false" onAction="#registerNewUser" prefHeight="25.0" prefWidth="149.0" text="Register" />
-      <Button layoutX="21.0" layoutY="15.0" mnemonicParsing="false" onAction="#redirectToLoginForm" text="&lt;" />
+      <Button fx:id="submitButton" layoutX="226.0" layoutY="343.0" mnemonicParsing="false" onAction="#registerNewUser" prefHeight="25.0" prefWidth="149.0" text="Register" />
+      <Button fx:id="returnButton" layoutX="21.0" layoutY="15.0" mnemonicParsing="false" onAction="#redirectToLoginForm" text="&lt;" />
    </children>
 </AnchorPane>

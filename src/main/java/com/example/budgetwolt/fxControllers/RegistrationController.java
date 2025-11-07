@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -57,13 +58,40 @@ public class RegistrationController implements Initializable {
     public DatePicker driverDateOfBirth;
     @FXML
     public TextField workingHours;
+    @FXML
+    public Text formLabel;
+    @FXML
+    public Button submitButton;
+    @FXML
+    public Button returnButton;
 
     private EntityManagerFactory entityManagerFactory;
     private CustomHibernate customHibernate;
 
-    public void setData(EntityManagerFactory entityManagerFactory) {
+    public void setData(EntityManagerFactory entityManagerFactory, User userToUpdate, boolean isEditModeEnabled, boolean isAdmin) {
         this.entityManagerFactory = entityManagerFactory;
         this.customHibernate = new CustomHibernate(entityManagerFactory);
+
+        if(isAdmin) {
+            returnButton.setDisable(true);
+            returnButton.setVisible(false);
+            submitButton.setText("Save");
+            formLabel.setText("Create new user");
+        }
+
+        if(isEditModeEnabled) {
+            formLabel.setText("Edit user");
+
+            fillUserData(userToUpdate);
+        }
+    }
+
+    public void fillUserData(User userToUpdate) {
+        usernameField.setText(userToUpdate.getUsername());
+        passwordField.setText(userToUpdate.getPassword());
+        nameField.setText(userToUpdate.getName());
+        surnameField.setText(userToUpdate.getSurname());
+        phoneNumberField.setText(userToUpdate.getPhoneNumber());
     }
 
     public void redirectToLoginForm(ActionEvent actionEvent) throws IOException {

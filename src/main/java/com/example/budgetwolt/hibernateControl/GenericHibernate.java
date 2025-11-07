@@ -1,10 +1,13 @@
 package com.example.budgetwolt.hibernateControl;
 
-import com.example.budgetwolt.models.User;
+import com.example.budgetwolt.fxControllers.FxUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+import javafx.scene.control.Alert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,13 +89,18 @@ public class GenericHibernate {
         List<T> list = new ArrayList<>();
         try {
             entityManager = entityManagerFactory.createEntityManager();
-            entityManager.getTransaction().begin();
-            CriteriaQuery query = entityManager.getCriteriaBuilder().createQuery();
-            query.select(query.from(entityClass));
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<T> query = cb.createQuery(entityClass);
+            Root<T> root = query.from(entityClass);
+            query.select(root);
             Query q = entityManager.createQuery(query);
             list = q.getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
+            FxUtil.generateAlert(Alert.AlertType.ERROR, "ERROR", "EXCEPTION", e.getMessage());
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
 
         return list;
