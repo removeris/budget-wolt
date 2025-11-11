@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class MainViewController implements Initializable {
 
@@ -62,14 +63,30 @@ public class MainViewController implements Initializable {
     @FXML
     public TextField priceField;
     @FXML
-    public ListView<Ingredients> ingredientsList;
+    public TextArea ingredientsField;
     @FXML
     public TextArea instructionsField;
     @FXML
     public CheckBox spicyCheckbox;
     @FXML
     public CheckBox veganCheckbox;
-
+    // Orders
+    @FXML
+    public ListView<FoodOrder> ordersListView;
+    @FXML
+    public ComboBox<BasicUser> clientComboBox;
+    @FXML
+    public TextField orderTitleField;
+    @FXML
+    public TextField orderPriceField;
+    @FXML
+    public ComboBox<Restaurant> restaurantComboBox;
+    @FXML
+    public ComboBox<OrderStatus> orderStatusComboBox;
+    @FXML
+    public ListView<Cuisine> restaurantMenuListView;
+    @FXML
+    public Tab ordersTab;
 
     private User currentUser;
     private ObservableList<UserTableParameters> data = FXCollections.observableArrayList();
@@ -98,14 +115,14 @@ public class MainViewController implements Initializable {
         phoneNumCol.setCellValueFactory(new PropertyValueFactory<>("phoneNum"));
 
         foodList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-           foodName.setText(newValue.getName());
-           priceField.setText(String.valueOf(newValue.getPrice()));
-           instructionsField.setText(newValue.getInstructions());
-           List<Ingredients> ingredients = newValue.getIngredients();
-
-           System.out.println(newValue.isSpicy());
-           spicyCheckbox.setSelected(newValue.isSpicy());
-           veganCheckbox.setSelected(newValue.isVegan());
+           if (newValue != null) {
+               foodName.setText(newValue.getName());
+               priceField.setText(String.valueOf(newValue.getPrice()));
+               instructionsField.setText(newValue.getInstructions());
+               ingredientsField.setText(newValue.getIngredients());
+               spicyCheckbox.setSelected(newValue.isSpicy());
+               veganCheckbox.setSelected(newValue.isVegan());
+           }
         });
     }
 
@@ -121,25 +138,18 @@ public class MainViewController implements Initializable {
     public void reloadTableData() {
         if (usersTab.isSelected()) {
             data.clear();
-            readUserData();
+            loadUserData();
         } else if (menuTab.isSelected()) {
             List<Cuisine> food = customHibernate.getAllRecords(Cuisine.class);
             foodList.setItems(FXCollections.observableList(food));
+        } else if (ordersTab.isSelected()) {
+            loadOrders();
 
-            ingredientsList.setItems(FXCollections.observableArrayList(Ingredients.values()));
-            ingredientsList.setCellFactory(CheckBoxListCell.forListView(item -> {
-                BooleanProperty selected = new SimpleBooleanProperty();
 
-                selected.addListener((obs, wasSelected, isNowSelected) -> {
-
-                });
-
-                return selected;
-            }));
         }
     }
 
-    public void readUserData() {
+    public void loadUserData() {
         List<User> users = this.customHibernate.getAllRecords(User.class);
         for (User user : users) {
             UserTableParameters userTableParameters = new UserTableParameters();
@@ -167,7 +177,6 @@ public class MainViewController implements Initializable {
         userTable.getItems().clear();
         userTable.getItems().addAll(data);
     }
-
     public void createUser(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("register-form.fxml"));
 
@@ -199,7 +208,6 @@ public class MainViewController implements Initializable {
         stage.showAndWait();
         reloadTableData();
     }
-
     public void deleteUser(ActionEvent actionEvent) {
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
         User userToUpdate = customHibernate.getEntityById(User.class, selectedUser.getId());
@@ -209,20 +217,29 @@ public class MainViewController implements Initializable {
     }
 
     public void deleteCuisine(ActionEvent actionEvent) {
+        Cuisine selectedCuisine = foodList.getSelectionModel().selectedItemProperty().getValue();
+        customHibernate.delete(selectedCuisine);
+        reloadTableData();
     }
-
     public void updateCuisine(ActionEvent actionEvent) {
+        Cuisine selectedCuisine = foodList.getSelectionModel().selectedItemProperty().getValue();
 
+        selectedCuisine.setName(foodName.getText());
+        selectedCuisine.setIngredients(ingredientsField.getText());
+        selectedCuisine.setPrice(Double.parseDouble(priceField.getText()));
+        selectedCuisine.setInstructions(instructionsField.getText());
+        selectedCuisine.setSpicy(spicyCheckbox.isSelected());
+        selectedCuisine.setVegan(veganCheckbox.isSelected());
+
+        customHibernate.update(selectedCuisine);
+        reloadTableData();
     }
-
     public void addCuisine(ActionEvent actionEvent) {
-
-        List<Ingredients> selectedIngredients = new ArrayList<>(ingredientsList.getSelectionModel().getSelectedItems());
 
         Cuisine food = new Cuisine(
                 foodName.getText(),
                 Double.parseDouble(priceField.getText()),
-                selectedIngredients,
+                ingredientsField.getText(),
                 instructionsField.getText(),
                 spicyCheckbox.isSelected(),
                 veganCheckbox.isSelected()
@@ -232,6 +249,58 @@ public class MainViewController implements Initializable {
 
         reloadTableData();
     }
+    public void clearCuisineFields(ActionEvent actionEvent) {
+        foodName.clear();
+        priceField.clear();
+        ingredientsField.clear();
+        instructionsField.clear();
+        spicyCheckbox.setSelected(false);
+        veganCheckbox.setSelected(false);
+
+        foodList.getSelectionModel().clearSelection();
+    }
+
+    public void loadOrders() {
+        List<FoodOrder> orders = customHibernate.getAllRecords(FoodOrder.class);
+        ordersListView.setItems(FXCollections.observableList(orders));
+        List<BasicUser> clients = customHibernate.getAllRecords(BasicUser.class)
+                .stream()
+                .filter(c -> !(c instanceof Restaurant || c instanceof Driver))
+                .collect(Collectors.toList());
+        clientComboBox.setItems(FXCollections.observableList(clients));
+        List<Restaurant> restaurants = customHibernate.getAllRecords(Restaurant.class);
+        restaurantComboBox.setItems(FXCollections.observableList(restaurants));
+        orderStatusComboBox.setItems(FXCollections.observableList(List.of(OrderStatus.values())));
+    }
+    public void createOrder(ActionEvent actionEvent) {
+        BasicUser selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
+        List<Cuisine> selectedItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
+        double orderPrice = Double.parseDouble(orderPriceField.getText());
+        Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
+
+        FoodOrder foodOrder = new FoodOrder(
+                orderTitleField.getText(),
+                selectedClient,
+                selectedItems,
+                orderPrice,
+                orderStatusComboBox.getValue(),
+                selectedRestaurant);
+
+        customHibernate.create(foodOrder);
+        reloadTableData();
+    }
+
+    public void updateOrder(ActionEvent actionEvent) {
+        FoodOrder selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
+
+        BasicUser selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
+        List<Cuisine> selectedItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
+        double orderPrice = Double.parseDouble(orderPriceField.getText());
+        Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
 
 
+    }
+
+    public void deleteOrder(ActionEvent actionEvent) {
+    }
 }

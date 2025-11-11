@@ -17,6 +17,7 @@ public class FoodOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String title;
     @ManyToOne
     private BasicUser buyer;
     @ManyToMany
@@ -24,6 +25,20 @@ public class FoodOrder {
     private double price;
     @OneToMany
     private List<Chat> chat;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     @ManyToOne
     private Restaurant restaurant;
+
+    public FoodOrder(String title, BasicUser buyer, List<Cuisine> items, double price, OrderStatus status, Restaurant restaurant) {
+        this.buyer = buyer;
+        this.items = items;
+        this.price = price;
+        this.status = status;
+        this.restaurant = restaurant;
+    }
+
+    public String toString() {
+        return "ID: " + id + " " + title;
+    }
 }

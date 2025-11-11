@@ -23,19 +23,13 @@ public class Cuisine {
     private List<FoodOrder> foodOrders;
     @ManyToOne
     private Restaurant restaurant;
-    @ElementCollection
-    @Enumerated(EnumType.STRING)
-    private List<Ingredients> ingredients;
-    @Enumerated(EnumType.STRING)
-    private Allergens allergens;
-    @Enumerated(EnumType.STRING)
-    private PortionSize portionSize;
+    private String ingredients;
     private double price;
     private String instructions;
     private boolean isSpicy;
     private boolean isVegan;
 
-    public Cuisine(String name, double price, List<Ingredients> ingredients, String instructions, boolean isSpicy, boolean isVegan) {
+    public Cuisine(String name, double price, String ingredients, String instructions, boolean isSpicy, boolean isVegan) {
         this.name = name;
         this.price = price;
         this.instructions = instructions;
