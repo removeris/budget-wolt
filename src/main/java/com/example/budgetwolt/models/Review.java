@@ -16,7 +16,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    private BasicUser owner;
+    private BasicUser commentOwner;
     @ManyToOne
     private BasicUser feedbackOwner;
     @ManyToOne
@@ -24,8 +24,9 @@ public class Review {
     private int rate;
     private String text;
 
-    public Review(int rate, String text) {
-        this.rate = rate;
+    public Review(String text, BasicUser commentOwner, Chat chat) {
         this.text = text;
+        this.commentOwner = commentOwner;
+        this.chat = chat;
     }
 }

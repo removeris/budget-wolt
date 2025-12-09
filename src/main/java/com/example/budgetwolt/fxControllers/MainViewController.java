@@ -112,7 +112,7 @@ public class MainViewController implements Initializable {
         this.entityManagerFactory = entityManagerFactory;
         this.customHibernate = new CustomHibernate(entityManagerFactory);
 
-        this.currentUser = user;
+        currentUser = user;
 
         this.menuTabManager = new MenuTabManager(customHibernate, currentUser, foodList, foodName,
                                                  priceField, ingredientsField, instructionsField, spicyCheckbox,
@@ -121,8 +121,8 @@ public class MainViewController implements Initializable {
                                                    clientComboBox, orderTitleField, orderPriceField,
                                                    restaurantComboBox, orderStatusComboBox, restaurantMenuListView);
         this.userTabManager = new UserTabManager(this.entityManagerFactory, customHibernate, currentUser, idCol, userTypeCol,
-                                                 usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
-                                                 userTable);
+                                                     usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
+                                                     userTable);
 
         greetingMessage.setText("Welcome " + this.currentUser.getName() + "!");
 
@@ -134,8 +134,8 @@ public class MainViewController implements Initializable {
         if (currentUser.isAdmin()) {
             restaurantSelectPane.setVisible(true);
         } else if (currentUser instanceof Restaurant) {
-            tabsPane.getSelectionModel().select(ordersTab);
             tabsPane.getTabs().remove(usersTab);
+            tabsPane.getSelectionModel().select(ordersTab);
             restaurantSelectPane.setVisible(false);
         }
     }
@@ -198,5 +198,22 @@ public class MainViewController implements Initializable {
         Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
 
         restaurantMenuListView.setItems(FXCollections.observableList(selectedRestaurant.getDishes()));
+    }
+
+    public void openChat(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("chat-view.fxml"));
+
+        Parent parent = fxmlLoader.load();
+
+        FoodOrder currentFoodOrder = ordersListView.getSelectionModel().getSelectedItem();
+
+        ChatController chatController = fxmlLoader.getController();
+        chatController.setData(entityManagerFactory, currentUser, currentFoodOrder);
+
+        Scene scene = new Scene(parent, 600, 600);
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
     }
 }

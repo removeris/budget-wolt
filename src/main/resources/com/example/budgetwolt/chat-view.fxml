@@ -5,8 +5,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="596.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.ChatView">
+<AnchorPane prefHeight="400.0" prefWidth="596.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.budgetwolt.fxControllers.ChatController">
    <children>
       <ListView fx:id="messageListView" layoutX="86.0" layoutY="50.0" prefHeight="226.0" prefWidth="430.0" />
       <Button fx:id="sendButton" layoutX="279.0" layoutY="361.0" mnemonicParsing="false" onAction="#sendMessage" text="Send" />

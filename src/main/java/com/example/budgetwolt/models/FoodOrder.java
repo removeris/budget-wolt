@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -23,12 +24,14 @@ public class FoodOrder {
     @ManyToMany
     private List<Cuisine> items;
     private double price;
-    @OneToMany
-    private List<Chat> chat;
+    @OneToOne
+    private Chat chat;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     @ManyToOne
     private Restaurant restaurant;
+    private LocalDate dateCreated;
+    private LocalDate dateUpdated;
 
     public FoodOrder(String title, BasicUser buyer, List<Cuisine> items, double price, OrderStatus status, Restaurant restaurant) {
         this.title = title;
@@ -40,6 +43,6 @@ public class FoodOrder {
     }
 
     public String toString() {
-        return "ID: " + id + " " + title;
+        return "ID: " + id + " " + title + " " + price;
     }
 }

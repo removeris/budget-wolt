@@ -75,6 +75,7 @@
                         <Label layoutX="315.0" layoutY="14.0" text="From" />
                         <DatePicker layoutX="465.0" layoutY="31.0" prefHeight="25.0" prefWidth="134.0" />
                         <Label layoutX="465.0" layoutY="14.0" text="To" />
+                        <Button layoutX="479.0" layoutY="351.0" mnemonicParsing="false" onAction="#openChat" prefHeight="25.0" prefWidth="233.0" text="Open Chat" />
                      </children></AnchorPane>
             </content>
           </Tab>
