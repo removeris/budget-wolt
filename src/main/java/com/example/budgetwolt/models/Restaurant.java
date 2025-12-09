@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class Restaurant extends BasicUser {
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     protected List<Cuisine> dishes;
     protected String workHours;
     protected double rating;

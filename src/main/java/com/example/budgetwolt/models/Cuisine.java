@@ -19,7 +19,7 @@ public class Cuisine {
     private int id;
     private String name;
 
-    @ManyToMany(mappedBy = "items", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "items", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<FoodOrder> foodOrders;
     @ManyToOne
     private Restaurant restaurant;
@@ -29,13 +29,14 @@ public class Cuisine {
     private boolean isSpicy;
     private boolean isVegan;
 
-    public Cuisine(String name, double price, String ingredients, String instructions, boolean isSpicy, boolean isVegan) {
+    public Cuisine(String name, double price, String ingredients, String instructions, boolean isSpicy, boolean isVegan, Restaurant restaurant) {
         this.name = name;
         this.price = price;
         this.instructions = instructions;
         this.isSpicy = isSpicy;
         this.isVegan = isVegan;
         this.ingredients = ingredients;
+        this.restaurant = restaurant;
     }
 
     public String toString(){

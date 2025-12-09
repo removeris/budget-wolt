@@ -31,6 +31,7 @@ public class FoodOrder {
     private Restaurant restaurant;
 
     public FoodOrder(String title, BasicUser buyer, List<Cuisine> items, double price, OrderStatus status, Restaurant restaurant) {
+        this.title = title;
         this.buyer = buyer;
         this.items = items;
         this.price = price;

@@ -23,7 +23,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TabPane layoutX="25.0" layoutY="44.0" prefHeight="503.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="tabsPane" layoutX="25.0" layoutY="44.0" prefHeight="503.0" prefWidth="797.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="usersTab" onSelectionChanged="#reloadTableData" text="Users">
             <content>
@@ -62,7 +62,7 @@
                         <Label layoutX="230.0" layoutY="122.0" text="Title" />
                         <TextField fx:id="orderPriceField" layoutX="231.0" layoutY="189.0" />
                         <Label layoutX="230.0" layoutY="172.0" text="Price" />
-                        <ComboBox fx:id="restaurantComboBox" layoutX="231.0" layoutY="237.0" prefWidth="150.0" />
+                        <ComboBox fx:id="restaurantComboBox" layoutX="231.0" layoutY="237.0" onAction="#loadRestaurantMenu" prefWidth="150.0" />
                         <Label layoutX="233.0" layoutY="220.0" text="Restaurant" />
                         <ComboBox fx:id="orderStatusComboBox" layoutX="230.0" layoutY="287.0" prefWidth="150.0" />
                         <Label layoutX="233.0" layoutY="270.0" text="Order Status" />
@@ -95,10 +95,16 @@
                               <Button layoutX="433.0" layoutY="382.0" mnemonicParsing="false" onAction="#deleteCuisine" prefHeight="25.0" prefWidth="54.0" text="Delete" />
                               <Button layoutX="352.0" layoutY="382.0" mnemonicParsing="false" onAction="#updateCuisine" text="Update" />
                               <Button layoutX="433.0" layoutY="315.0" mnemonicParsing="false" onAction="#addCuisine" prefHeight="25.0" prefWidth="56.0" text="Add" />
-                              <TextField fx:id="priceField" layoutX="161.0" layoutY="17.0" />
-                              <Label layoutX="160.0" text="Price" />
-                              <TextArea fx:id="ingredientsField" layoutY="66.0" prefHeight="117.0" prefWidth="310.0" promptText="banana, chicken" />
+                              <TextField fx:id="priceField" layoutX="171.0" layoutY="17.0" />
+                              <Label layoutX="171.0" text="Price" />
+                              <TextArea fx:id="ingredientsField" layoutY="66.0" prefHeight="117.0" prefWidth="321.0" promptText="banana, chicken" />
                               <Button layoutX="353.0" layoutY="315.0" mnemonicParsing="false" onAction="#clearCuisineFields" prefHeight="25.0" prefWidth="56.0" text="New" />
+                           </children>
+                        </Pane>
+                        <Pane fx:id="restaurantSelectPane" layoutX="593.0" layoutY="84.0" prefHeight="52.0" prefWidth="204.0">
+                           <children>
+                              <ComboBox fx:id="restaurantSelectComboBox" layoutY="26.0" prefHeight="25.0" prefWidth="204.0" />
+                              <Label layoutY="6.0" text="Restaurant" />
                            </children>
                         </Pane>
                      </children>

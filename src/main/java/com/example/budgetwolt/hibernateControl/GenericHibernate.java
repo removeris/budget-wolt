@@ -50,16 +50,16 @@ public class GenericHibernate {
         }
     }
 
-    public <T> void delete(T entity) {
+    public <T> void delete(Class<T> entity, int id) {
         try {
             entityManager = entityManagerFactory.createEntityManager();
             entityManager.getTransaction().begin();
 
-            T managedEntity = entityManager.merge(entity);
+            T managedEntity = entityManager.find(entity, id);
             entityManager.remove(managedEntity);
             entityManager.getTransaction().commit();
         } catch(Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         } finally {
             if (entityManager != null)
                 entityManager.close();
