@@ -7,6 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +55,16 @@ public class OrderTabManager {
     }
 
     public void loadData() {
-        List<FoodOrder> orders = customHibernate.getAllRecords(FoodOrder.class);
+
+        List<FoodOrder> orders = new ArrayList<>();
+
+        if (currentUser.isAdmin()) {
+            orders = customHibernate.getAllRecords(FoodOrder.class);
+        } else if (currentUser instanceof Restaurant) {
+            orders = ((Restaurant) currentUser).getFoodOrders();
+        }
         ordersListView.setItems(FXCollections.observableList(orders));
+
         List<BasicUser> clients = customHibernate.getAllRecords(BasicUser.class)
                 .stream()
                 .filter(c -> !(c instanceof Restaurant || c instanceof Driver))
@@ -87,17 +96,30 @@ public class OrderTabManager {
     public void updateOrder() {
         FoodOrder selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
 
-        BasicUser selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
-        List<Cuisine> selectedItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
-        double orderPrice = Double.parseDouble(orderPriceField.getText());
-        Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
+        BasicUser client = clientComboBox.getSelectionModel().getSelectedItem();
+        List<Cuisine> foodItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
+        String title = orderTitleField.getText();
+        double price = Double.parseDouble(orderPriceField.getText());
+        Restaurant restaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
+        OrderStatus status = orderStatusComboBox.getValue();
+
+        selectedOrder.setBuyer(client);
+        selectedOrder.setItems(foodItems);
+        selectedOrder.setTitle(title);
+        selectedOrder.setPrice(price);
+        selectedOrder.setRestaurant(restaurant);
+        selectedOrder.setStatus(status);
+
+        customHibernate.update(selectedOrder);
 
         loadData();
     }
 
     public void deleteOrder() {
         FoodOrder selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
+
         customHibernate.delete(FoodOrder.class, selectedOrder.getId());
+
         loadData();
     }
 

@@ -16,10 +16,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,13 +44,18 @@ public class UserTabManager {
     private final TableColumn<UserTableParameters, String> addressCol;
     private final TableColumn<UserTableParameters, String> phoneNumCol;
     private final TableView<UserTableParameters> userTable;
+    private final TextField usernameField;
+    private final TextField nameField;
+    private final TextField surnameField;
+    private final TextField phoneNumberField;
 
     public UserTabManager(EntityManagerFactory entityManagerFactory, CustomHibernate customHibernate, User currentUser,
                           TableColumn<UserTableParameters, Integer> idCol, TableColumn<UserTableParameters, String> userTypeCol,
                           TableColumn<UserTableParameters, String> usernameCol, TableColumn<UserTableParameters, String> passwordCol,
                           TableColumn<UserTableParameters, String> nameCol, TableColumn<UserTableParameters, String> surnameCol,
                           TableColumn<UserTableParameters, String> addressCol, TableColumn<UserTableParameters, String> phoneNumCol,
-                          TableView<UserTableParameters> userTable) {
+                          TableView<UserTableParameters> userTable, TextField usernameField, TextField nameField,
+                          TextField surnameField, TextField phoneNumberField) {
         this.entityManagerFactory = entityManagerFactory;
         this.customHibernate = customHibernate;
         this.currentUser = currentUser;
@@ -61,6 +68,10 @@ public class UserTabManager {
         this.addressCol = addressCol;
         this.phoneNumCol = phoneNumCol;
         this.userTable = userTable;
+        this.usernameField = usernameField;
+        this.nameField = nameField;
+        this.surnameField = surnameField;
+        this.phoneNumberField = phoneNumberField;
 
         initUserTable();
     }
@@ -155,7 +166,35 @@ public class UserTabManager {
 
     public void deleteUser() {
         UserTableParameters selectedUser = userTable.getSelectionModel().getSelectedItem();
+
         customHibernate.delete(User.class, selectedUser.getId());
+
+        loadData();
+    }
+
+    public void searchUsers() {
+        String username = usernameField.getText();
+        String name = nameField.getText();
+        String surname = surnameField.getText();
+        String phoneNumber = phoneNumberField.getText();
+
+        List<User> foundUsers = customHibernate.searchUsers(username, name, surname, phoneNumber);
+        data.clear();
+
+        for (User user : foundUsers) {
+            UserTableParameters userTableParameters = getUserTableParameters(user);
+
+            data.add(userTableParameters);
+        }
+        userTable.getItems().clear();
+        userTable.getItems().addAll(data);
+    }
+
+    public void clearFilters() {
+        usernameField.clear();
+        nameField.clear();
+        surnameField.clear();
+        phoneNumberField.clear();
 
         loadData();
     }

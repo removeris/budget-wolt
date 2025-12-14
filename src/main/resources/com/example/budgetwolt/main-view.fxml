@@ -29,7 +29,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="userTable" prefHeight="350.0" prefWidth="797.0">
+                        <TableView fx:id="userTable" layoutY="60.0" prefHeight="290.0" prefWidth="798.0">
                           <columns>
                             <TableColumn fx:id="idCol" prefWidth="75.0" text="ID" />
                             <TableColumn fx:id="userTypeCol" prefWidth="75.0" text="User Type" />
@@ -47,6 +47,12 @@
                         <Button layoutX="357.0" layoutY="396.0" mnemonicParsing="false" onAction="#updateUser" text="Update" />
                         <Button layoutX="226.0" layoutY="396.0" mnemonicParsing="false" onAction="#createUser" text="Create New" />
                         <Button layoutX="469.0" layoutY="396.0" mnemonicParsing="false" onAction="#deleteUser" text="Delete" />
+                        <TextField fx:id="usernameField" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="102.0" promptText="Username" />
+                        <Button layoutX="560.0" layoutY="13.0" mnemonicParsing="false" onAction="#searchUsers" prefHeight="26.0" prefWidth="82.0" text="Search" />
+                        <TextField fx:id="surnameField" layoutX="265.0" layoutY="14.0" prefHeight="26.0" prefWidth="110.0" promptText="Surname" />
+                        <TextField fx:id="nameField" layoutX="137.0" layoutY="13.0" prefHeight="26.0" prefWidth="110.0" promptText="Name" />
+                        <TextField fx:id="phoneNumberField" layoutX="394.0" layoutY="13.0" prefHeight="26.0" prefWidth="110.0" promptText="Phone Number" />
+                        <Button layoutX="667.0" layoutY="14.0" mnemonicParsing="false" onAction="#clearFilters" prefHeight="26.0" prefWidth="82.0" text="Clear Filters" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -71,11 +77,19 @@
                         <Button layoutX="230.0" layoutY="344.0" mnemonicParsing="false" onAction="#createOrder" prefHeight="25.0" prefWidth="150.0" text="New" />
                         <Button layoutX="229.0" layoutY="392.0" mnemonicParsing="false" onAction="#updateOrder" text="Update" />
                         <Button layoutX="330.0" layoutY="392.0" mnemonicParsing="false" onAction="#deleteOrder" text="Delete" />
-                        <DatePicker layoutX="313.0" layoutY="31.0" prefHeight="25.0" prefWidth="134.0" />
-                        <Label layoutX="315.0" layoutY="14.0" text="From" />
-                        <DatePicker layoutX="465.0" layoutY="31.0" prefHeight="25.0" prefWidth="134.0" />
-                        <Label layoutX="465.0" layoutY="14.0" text="To" />
+                        <DatePicker fx:id="fromDateFilter" layoutX="464.0" layoutY="36.0" prefHeight="25.0" prefWidth="111.0" />
+                        <Label layoutX="464.0" layoutY="18.0" text="From" />
+                        <DatePicker fx:id="toDateFilter" layoutX="588.0" layoutY="36.0" prefHeight="25.0" prefWidth="111.0" />
+                        <Label layoutX="586.0" layoutY="18.0" text="To" />
                         <Button layoutX="479.0" layoutY="351.0" mnemonicParsing="false" onAction="#openChat" prefHeight="25.0" prefWidth="233.0" text="Open Chat" />
+                        <ComboBox fx:id="clientFilterComboBox" layoutX="336.0" layoutY="33.0" prefHeight="25.0" prefWidth="111.0" />
+                        <Label layoutX="337.0" layoutY="15.0" text="Client" />
+                        <ComboBox fx:id="statusFilterComboBox" layoutX="204.0" layoutY="33.0" prefHeight="25.0" prefWidth="111.0" />
+                        <Label layoutX="204.0" layoutY="15.0" text="Status" />
+                        <Label layoutX="30.0" layoutY="14.0" text="Restaurant" />
+                        <ComboBox fx:id="restaurantFilterComboBox" layoutX="30.0" layoutY="32.0" prefWidth="150.0" />
+                        <Button layoutX="719.0" layoutY="17.0" mnemonicParsing="false" text="Filter" />
+                        <Button layoutX="719.0" layoutY="55.0" mnemonicParsing="false" text="Clear" />
                      </children></AnchorPane>
             </content>
           </Tab>
@@ -104,7 +118,7 @@
                         </Pane>
                         <Pane fx:id="restaurantSelectPane" layoutX="593.0" layoutY="84.0" prefHeight="52.0" prefWidth="204.0">
                            <children>
-                              <ComboBox fx:id="restaurantSelectComboBox" layoutY="26.0" prefHeight="25.0" prefWidth="204.0" />
+                              <ComboBox fx:id="restaurantSelectComboBox" layoutY="26.0" onAction="#loadSelectedMenu" prefHeight="25.0" prefWidth="204.0" />
                               <Label layoutY="6.0" text="Restaurant" />
                            </children>
                         </Pane>

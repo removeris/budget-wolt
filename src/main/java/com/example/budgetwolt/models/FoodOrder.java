@@ -40,6 +40,8 @@ public class FoodOrder {
         this.price = price;
         this.status = status;
         this.restaurant = restaurant;
+        dateCreated = LocalDate.now();
+        dateUpdated = LocalDate.now();
     }
 
     public String toString() {

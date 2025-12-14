@@ -6,7 +6,11 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomHibernate extends GenericHibernate {
     public CustomHibernate(EntityManagerFactory entityManagerFactory) {
@@ -63,5 +67,48 @@ public class CustomHibernate extends GenericHibernate {
         }
 
         return false;
+    }
+
+    public List<User> searchUsers(String username, String name, String surname, String phoneNumber) {
+        List<User> users = new ArrayList<>();
+
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> query = cb.createQuery(User.class);
+            Root<User> root = query.from(User.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (username != null && !username.trim().isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("username")), "%" + username.toLowerCase() + "%"));
+            }
+
+            if (name != null && !name.trim().isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            }
+
+            if (surname != null && !surname.trim().isEmpty()) {
+                predicates.add(cb.like(cb.lower(root.get("surname")), "%" + surname.toLowerCase() + "%"));
+            }
+
+            if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
+                predicates.add(cb.like(root.get("phoneNumber"), "%" + phoneNumber + "%"));
+            }
+
+            query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+
+            users = entityManager.createQuery(query).getResultList();
+
+        } catch (Exception e) {
+            // Some error
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
+        return users;
     }
 }

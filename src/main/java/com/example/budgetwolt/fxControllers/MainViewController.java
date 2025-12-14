@@ -55,6 +55,15 @@ public class MainViewController implements Initializable {
     public TableColumn<UserTableParameters, String> phoneNumCol;
     @FXML
     public TableView<UserTableParameters> userTable;
+    @FXML
+    public TextField usernameField;
+    @FXML
+    public TextField surnameField;
+    @FXML
+    public TextField nameField;
+    @FXML
+    public TextField phoneNumberField;
+
     // Menu
     @FXML
     public Tab menuTab;
@@ -93,6 +102,11 @@ public class MainViewController implements Initializable {
     public ComboBox<OrderStatus> orderStatusComboBox;
     @FXML
     public ListView<Cuisine> restaurantMenuListView;
+    @FXML
+    public ComboBox clientFilterComboBox;
+    @FXML
+    public ComboBox statusFilterComboBox;
+
 
     private EntityManagerFactory entityManagerFactory;
     private CustomHibernate customHibernate;
@@ -122,7 +136,7 @@ public class MainViewController implements Initializable {
                                                    restaurantComboBox, orderStatusComboBox, restaurantMenuListView);
         this.userTabManager = new UserTabManager(this.entityManagerFactory, customHibernate, currentUser, idCol, userTypeCol,
                                                      usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
-                                                     userTable);
+                                                     userTable, usernameField, nameField, surnameField, phoneNumberField);
 
         greetingMessage.setText("Welcome " + this.currentUser.getName() + "!");
 
@@ -197,7 +211,10 @@ public class MainViewController implements Initializable {
     public void loadRestaurantMenu(ActionEvent actionEvent) {
         Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
 
-        restaurantMenuListView.setItems(FXCollections.observableList(selectedRestaurant.getDishes()));
+        if (selectedRestaurant != null) {
+            restaurantMenuListView.setItems(FXCollections.observableList(selectedRestaurant.getDishes()));
+        }
+
     }
 
     public void openChat(ActionEvent actionEvent) throws IOException {
@@ -215,5 +232,24 @@ public class MainViewController implements Initializable {
         stage.setScene(scene);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.showAndWait();
+    }
+
+    public void loadSelectedMenu(ActionEvent actionEvent) {
+        Restaurant selectedRestaurant = restaurantSelectComboBox.getSelectionModel().getSelectedItem();
+
+        if (selectedRestaurant != null) {
+            foodList.setItems(FXCollections.observableList(selectedRestaurant.getDishes()));
+        }
+    }
+
+    public void filterOrders(ActionEvent actionEvent) {
+    }
+
+    public void searchUsers(ActionEvent actionEvent) {
+        userTabManager.searchUsers();
+    }
+
+    public void clearFilters(ActionEvent actionEvent) {
+        userTabManager.clearFilters();
     }
 }
