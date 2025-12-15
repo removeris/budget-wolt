@@ -118,7 +118,7 @@ public class OrderTabManager {
     public void deleteOrder() {
         FoodOrder selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
 
-        customHibernate.delete(FoodOrder.class, selectedOrder.getId());
+        customHibernate.deleteFoodOrder(selectedOrder.getId());
 
         loadData();
     }

@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.net.URL;
@@ -177,10 +178,12 @@ public class RegistrationController implements Initializable {
             return;
         }
 
+        String hashedPassword = BCrypt.hashpw(passwordField.getText(), BCrypt.gensalt());
+
         if (userRadio.isSelected()) {
             User user = new User(
                     usernameField.getText(),
-                    passwordField.getText(),
+                    hashedPassword,
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText());
@@ -189,7 +192,7 @@ public class RegistrationController implements Initializable {
         } else if (clientRadio.isSelected()) {
             BasicUser basicUser = new BasicUser(
                     usernameField.getText(),
-                    passwordField.getText(),
+                    hashedPassword,
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText(),
@@ -198,7 +201,7 @@ public class RegistrationController implements Initializable {
         } else if (courierRadio.isSelected()) {
             Driver driver = new Driver(
                     usernameField.getText(),
-                    passwordField.getText(),
+                    hashedPassword,
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText(),
@@ -209,7 +212,7 @@ public class RegistrationController implements Initializable {
         } else if (restaurantRadio.isSelected()) {
             Restaurant restaurant = new Restaurant(
                     usernameField.getText(),
-                    passwordField.getText(),
+                    hashedPassword,
                     nameField.getText(),
                     surnameField.getText(),
                     phoneNumberField.getText(),
@@ -228,8 +231,10 @@ public class RegistrationController implements Initializable {
             }
         }
 
+        String hashedPassword = BCrypt.hashpw(passwordField.getText(), BCrypt.gensalt());
+
         userToUpdate.setUsername(usernameField.getText());
-        userToUpdate.setPassword(passwordField.getText());
+        userToUpdate.setPassword(hashedPassword);
         userToUpdate.setName(nameField.getText());
         userToUpdate.setSurname(surnameField.getText());
         userToUpdate.setPhoneNumber(phoneNumberField.getText());

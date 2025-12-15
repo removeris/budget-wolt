@@ -7,6 +7,7 @@ module com.example.budgetwolt {
     requires java.sql;
     requires java.naming;
     requires mysql.connector.j;
+    requires jbcrypt;
 
 
     requires org.controlsfx.controls;

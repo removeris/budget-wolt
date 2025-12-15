@@ -1,5 +1,7 @@
 package com.example.budgetwolt.hibernateControl;
 
+import com.example.budgetwolt.models.BasicUser;
+import com.example.budgetwolt.models.FoodOrder;
 import com.example.budgetwolt.models.User;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
@@ -8,6 +10,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +20,7 @@ public class CustomHibernate extends GenericHibernate {
         super(entityManagerFactory);
     }
 
-    public User getUserByCredentials(String username, String password) {
+    public User validateLogin(String username, String password) {
         User user = null;
 
         try {
@@ -26,21 +29,31 @@ public class CustomHibernate extends GenericHibernate {
             CriteriaQuery<User> query = cb.createQuery(User.class);
             Root<User> root = query.from(User.class);
 
-            query.select(root).where(cb.and(
-                            cb.equal(root.get("username"), username)),
-                            cb.equal(root.get("password"), password));
+            query.select(root).where(cb.equal(root.get("username"), username));
+
             Query q = entityManager.createQuery(query);
 
             user = (User) q.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         } catch (Exception e) {
-            // alert spot
+            e.printStackTrace();
+            return null;
         } finally {
             if(entityManager != null) {
                 entityManager.close();
             }
         }
 
-        return user;
+        if (user != null) {
+            System.out.println("HELLO PEOPLE!!!!!\n\n");
+        }
+
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            return user;
+        }
+
+        return null;
     }
 
     public boolean isUniqueUsername(String username) {
@@ -110,5 +123,29 @@ public class CustomHibernate extends GenericHibernate {
         }
 
         return users;
+    }
+
+    public void deleteFoodOrder(int id) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            FoodOrder foodOrder = entityManager.find(FoodOrder.class, id);
+
+            if (foodOrder != null) {
+                BasicUser buyer = foodOrder.getBuyer();
+                buyer.getMyOrders().remove(foodOrder);
+                entityManager.merge(buyer);
+            }
+
+            entityManager.remove(foodOrder);
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
     }
 }

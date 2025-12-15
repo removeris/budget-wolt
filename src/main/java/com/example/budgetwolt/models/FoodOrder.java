@@ -24,7 +24,7 @@ public class FoodOrder {
     @ManyToMany
     private List<Cuisine> items;
     private double price;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Chat chat;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

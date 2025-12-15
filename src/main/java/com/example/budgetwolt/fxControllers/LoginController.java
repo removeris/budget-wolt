@@ -46,7 +46,7 @@ public class LoginController implements Initializable {
         String username = this.usernameField.getText();
         String psw = this.passwordField.getText();
 
-        User user = customHibernate.getUserByCredentials(username, psw);
+        User user = customHibernate.validateLogin(username, psw);
 
         if(user == null) {
             FxUtil.generateAlert(Alert.AlertType.ERROR, "Error!", "Incorrect credentials", "Retry with correct credentials.");
