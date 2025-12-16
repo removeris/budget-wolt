@@ -41,11 +41,8 @@ public class ChatController {
             customHibernate.create(chat);
         }
 
-        FoodOrder foodOrder = customHibernate.getEntityById(FoodOrder.class, currentFoodOrder.getId());
-        Review message = new Review(messageField.getText(), (BasicUser) currentUser, (Chat) foodOrder.getChat());
-        foodOrder.getChat();
 
-        customHibernate.create(message);
+
 
         loadChat();
     }
