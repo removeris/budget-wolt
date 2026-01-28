@@ -3,10 +3,8 @@ package com.example.budgetwolt.fxControllers.tabManagers;
 import com.example.budgetwolt.hibernateControl.CustomHibernate;
 import com.example.budgetwolt.models.*;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import org.hibernate.query.Order;
 
@@ -32,13 +30,17 @@ public class OrderTabManager {
     private final ComboBox<Restaurant> restaurantFilterComboBox;
     private final DatePicker fromDateFilter;
     private final DatePicker toDateFilter;
+    private final Label restaurantLabel;
+    private final ListView<Cuisine> selectedMenuItemsListView;
+    private ObservableList<Cuisine> selectedMenuItems = FXCollections.observableArrayList();
 
     public OrderTabManager(CustomHibernate customHibernate, User currentUser,
                            ListView<FoodOrder> ordersListView, ComboBox<BasicUser> clientComboBox,
                            TextField orderTitleField, TextField orderPriceField, ComboBox<Restaurant> restaurantComboBox,
                            ComboBox<OrderStatus> orderStatusComboBox, ListView<Cuisine> restaurantMenuListView,
                            ComboBox<BasicUser> clientFilterComboBox, ComboBox<OrderStatus> statusFilterComboBox,
-                           ComboBox<Restaurant> restaurantFilterComboBox, DatePicker fromDateFilter, DatePicker toDateFilter) {
+                           ComboBox<Restaurant> restaurantFilterComboBox, DatePicker fromDateFilter, DatePicker toDateFilter,
+                           Label restaurantLabel, ListView<Cuisine> selectedMenuItemsListView) {
 
         this.customHibernate = customHibernate;
         this.currentUser = currentUser;
@@ -54,6 +56,9 @@ public class OrderTabManager {
         this.restaurantFilterComboBox = restaurantFilterComboBox;
         this.fromDateFilter = fromDateFilter;
         this.toDateFilter = toDateFilter;
+        this.restaurantLabel = restaurantLabel;
+        this.selectedMenuItemsListView = selectedMenuItemsListView;
+        this.selectedMenuItemsListView.setItems(selectedMenuItems);
 
         initListeners();
     }
@@ -66,6 +71,18 @@ public class OrderTabManager {
                 orderPriceField.setText(String.valueOf(newValue.getPrice()));
                 restaurantComboBox.setValue(newValue.getRestaurant());
                 orderStatusComboBox.setValue(newValue.getStatus());
+                selectedMenuItems.clear();
+                selectedMenuItems.setAll(customHibernate.getCuisineList(newValue));
+            }
+        });
+        restaurantMenuListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                System.out.println("OOGABOOGA");
+                Cuisine selectedMenuItem = restaurantMenuListView.getSelectionModel().getSelectedItem();
+                if (selectedMenuItem != null) {
+                    selectedMenuItems.add(selectedMenuItem);
+                    //selectedMenuItemsListView.setItems(selectedMenuItems);
+                }
             }
         });
     }
@@ -77,7 +94,9 @@ public class OrderTabManager {
         if (currentUser.isAdmin()) {
             orders = customHibernate.getAllRecords(FoodOrder.class);
         } else if (currentUser instanceof Restaurant) {
-            orders = ((Restaurant) currentUser).getFoodOrders();
+            orders = customHibernate.searchOrders((Restaurant) currentUser, null, null, null, null);
+            restaurantFilterComboBox.setVisible(false);
+            restaurantLabel.setVisible(false);
         }
         ordersListView.setItems(FXCollections.observableList(orders));
 
@@ -96,6 +115,9 @@ public class OrderTabManager {
         clientFilterComboBox.setConverter(new StringConverter<BasicUser>() {
             @Override
             public String toString(BasicUser client) {
+                if(client == null) {
+                    return null;
+                }
                 return client.getName() + " " + client.getSurname() + " " + client.getUsername();
             }
 
@@ -108,6 +130,9 @@ public class OrderTabManager {
         restaurantFilterComboBox.setConverter(new StringConverter<Restaurant>() {
             @Override
             public String toString(Restaurant restaurant) {
+                if(restaurant == null) {
+                    return null;
+                }
                 return restaurant.getName();
             }
             @Override
@@ -119,7 +144,8 @@ public class OrderTabManager {
 
     public void createOrder() {
         BasicUser selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
-        List<Cuisine> selectedItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
+        List<Cuisine> selectedItems = selectedMenuItems;
+        // TODO get items from selectedItems listview,
         double orderPrice = Double.parseDouble(orderPriceField.getText());
         Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
 
@@ -139,7 +165,7 @@ public class OrderTabManager {
         FoodOrder selectedOrder = ordersListView.getSelectionModel().getSelectedItem();
 
         BasicUser client = clientComboBox.getSelectionModel().getSelectedItem();
-        List<Cuisine> foodItems = restaurantMenuListView.getSelectionModel().getSelectedItems();
+        List<Cuisine> foodItems = selectedMenuItems;
         String title = orderTitleField.getText();
         double price = Double.parseDouble(orderPriceField.getText());
         Restaurant restaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
@@ -168,6 +194,9 @@ public class OrderTabManager {
 
     public void filterOrders() {
         Restaurant restaurant = restaurantFilterComboBox.getSelectionModel().getSelectedItem();
+        if (currentUser instanceof Restaurant) {
+            restaurant = (Restaurant) currentUser;
+        }
         OrderStatus orderStatus = statusFilterComboBox.getValue();
         BasicUser client = clientFilterComboBox.getSelectionModel().getSelectedItem();
         LocalDate fromDate = fromDateFilter.getValue();

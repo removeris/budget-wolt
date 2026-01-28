@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManagerFactory;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
@@ -22,6 +23,20 @@ public class ChatController {
     private FoodOrder currentFoodOrder;
 
     public void setData(EntityManagerFactory entityManagerFactory, User currentUser, FoodOrder currentFoodOrder) {
+
+        messageListView.setCellFactory(lv -> new ListCell<Review>() {
+            @Override
+            protected void updateItem(Review item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String sender = item.getCommentOwner().getUsername();
+                    setText(sender + ": " + item.getText());
+                }
+            }
+        });
+
         this.entityManagerFactory = entityManagerFactory;
         customHibernate = new CustomHibernate(this.entityManagerFactory);
         this.currentUser = currentUser;
@@ -31,18 +46,33 @@ public class ChatController {
 
     public void loadChat() {
         if (currentFoodOrder.getChat() != null) {
-            messageListView.setItems(FXCollections.observableList(currentFoodOrder.getChat().getMessages()));
+            Chat freshChat = customHibernate.getChatWithMessages(currentFoodOrder.getChat().getId());
+
+            if (freshChat != null) {
+                messageListView.getItems().setAll(freshChat.getMessages());
+                messageListView.scrollTo(messageListView.getItems().size() - 1);
+            }
         }
     }
 
     public void sendMessage(ActionEvent actionEvent) {
-        if(currentFoodOrder.getChat() == null) {
-            Chat chat = new Chat("Chat no " + currentFoodOrder.getTitle(), currentFoodOrder);
+        String messageText = messageField.getText();
+        if (messageText == null || messageText.trim().isEmpty()) return;
+
+        Chat chat = currentFoodOrder.getChat();
+
+        if (chat == null) {
+            chat = new Chat("Order Chat #" + currentFoodOrder.getId(), currentFoodOrder);
             customHibernate.create(chat);
+
+            currentFoodOrder.setChat(chat);
+            customHibernate.update(currentFoodOrder);
         }
 
+        Review chatMessage = new Review(messageText, (BasicUser) currentUser, chat);
+        customHibernate.create(chatMessage);
 
-
+        messageField.clear();
 
         loadChat();
     }

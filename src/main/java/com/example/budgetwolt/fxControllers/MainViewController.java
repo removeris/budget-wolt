@@ -112,6 +112,10 @@ public class MainViewController implements Initializable {
     public DatePicker fromDateFilter;
     @FXML
     public DatePicker toDateFilter;
+    @FXML
+    public Label restaurantLabel;
+    @FXML
+    public ListView<Cuisine> selectedMenuItemsListView;
 
 
     private EntityManagerFactory entityManagerFactory;
@@ -141,7 +145,7 @@ public class MainViewController implements Initializable {
                                                    clientComboBox, orderTitleField, orderPriceField,
                                                    restaurantComboBox, orderStatusComboBox, restaurantMenuListView,
                                                    clientFilterComboBox, statusFilterComboBox, restaurantFilterComboBox,
-                                                   fromDateFilter, toDateFilter);
+                                                   fromDateFilter, toDateFilter, restaurantLabel, selectedMenuItemsListView);
         this.userTabManager = new UserTabManager(this.entityManagerFactory, customHibernate, currentUser, idCol, userTypeCol,
                                                      usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
                                                      userTable, usernameField, nameField, surnameField, phoneNumberField);

@@ -4,10 +4,7 @@ import com.example.budgetwolt.models.*;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
@@ -190,5 +187,45 @@ public class CustomHibernate extends GenericHibernate {
             if (entityManager != null) entityManager.close();
         }
         return orders;
+    }
+
+    public List<Cuisine> getCuisineList(FoodOrder foodOrder) {
+        if (foodOrder == null) return new ArrayList<>();
+
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+
+            FoodOrder mergedOrder = entityManager.merge(foodOrder);
+
+            // Accessing the size() or iterator forces Hibernate to load the data
+            List<Cuisine> cuisines = mergedOrder.getItems();
+            //cuisines.size();
+
+            return new ArrayList<>(cuisines);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        } finally {
+            if (entityManager != null) entityManager.close();
+        }
+    }
+
+    public Chat getChatWithMessages(int chatId) {
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Chat> query = cb.createQuery(Chat.class);
+            Root<Chat> root = query.from(Chat.class);
+
+            root.fetch("messages", JoinType.LEFT);
+
+            query.select(root).where(cb.equal(root.get("id"), chatId));
+
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if(entityManager != null) entityManager.close();
+        }
     }
 }
