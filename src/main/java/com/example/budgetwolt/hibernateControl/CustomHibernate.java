@@ -148,4 +148,8 @@ public class CustomHibernate extends GenericHibernate {
             }
         }
     }
+
+    public List<FoodOrder> filterOrders() {
+        return null;
+    }
 }

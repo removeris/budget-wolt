@@ -103,9 +103,15 @@ public class MainViewController implements Initializable {
     @FXML
     public ListView<Cuisine> restaurantMenuListView;
     @FXML
-    public ComboBox clientFilterComboBox;
+    public ComboBox<BasicUser> clientFilterComboBox;
     @FXML
-    public ComboBox statusFilterComboBox;
+    public ComboBox<OrderStatus> statusFilterComboBox;
+    @FXML
+    public ComboBox<Restaurant> restaurantFilterComboBox;
+    @FXML
+    public DatePicker fromDateFilter;
+    @FXML
+    public DatePicker toDateFilter;
 
 
     private EntityManagerFactory entityManagerFactory;
@@ -133,7 +139,9 @@ public class MainViewController implements Initializable {
                                                  veganCheckbox, restaurantSelectComboBox);
         this.orderTabManager = new OrderTabManager(customHibernate, currentUser, ordersListView,
                                                    clientComboBox, orderTitleField, orderPriceField,
-                                                   restaurantComboBox, orderStatusComboBox, restaurantMenuListView);
+                                                   restaurantComboBox, orderStatusComboBox, restaurantMenuListView,
+                                                   clientFilterComboBox, statusFilterComboBox, restaurantFilterComboBox,
+                                                   fromDateFilter, toDateFilter);
         this.userTabManager = new UserTabManager(this.entityManagerFactory, customHibernate, currentUser, idCol, userTypeCol,
                                                      usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
                                                      userTable, usernameField, nameField, surnameField, phoneNumberField);

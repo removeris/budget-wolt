@@ -4,8 +4,10 @@ import com.example.budgetwolt.hibernateControl.CustomHibernate;
 import com.example.budgetwolt.models.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import org.hibernate.query.Order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +25,18 @@ public class OrderTabManager {
     private final ComboBox<Restaurant> restaurantComboBox;
     private final ComboBox<OrderStatus> orderStatusComboBox;
     private final ListView<Cuisine> restaurantMenuListView;
+    private final ComboBox<BasicUser> clientFilterComboBox;
+    private final ComboBox<OrderStatus> statusFilterComboBox;
+    private final ComboBox<Restaurant> restaurantFilterComboBox;
+    private final DatePicker fromDateFilter;
+    private final DatePicker toDateFilter;
 
     public OrderTabManager(CustomHibernate customHibernate, User currentUser,
                            ListView<FoodOrder> ordersListView, ComboBox<BasicUser> clientComboBox,
                            TextField orderTitleField, TextField orderPriceField, ComboBox<Restaurant> restaurantComboBox,
-                           ComboBox<OrderStatus> orderStatusComboBox, ListView<Cuisine> restaurantMenuListView) {
+                           ComboBox<OrderStatus> orderStatusComboBox, ListView<Cuisine> restaurantMenuListView,
+                           ComboBox<BasicUser> clientFilterComboBox, ComboBox<OrderStatus> statusFilterComboBox,
+                           ComboBox<Restaurant> restaurantFilterComboBox, DatePicker fromDateFilter, DatePicker toDateFilter) {
 
         this.customHibernate = customHibernate;
         this.currentUser = currentUser;
@@ -38,6 +47,11 @@ public class OrderTabManager {
         this.restaurantComboBox = restaurantComboBox;
         this.orderStatusComboBox = orderStatusComboBox;
         this.restaurantMenuListView = restaurantMenuListView;
+        this.clientFilterComboBox = clientFilterComboBox;
+        this.statusFilterComboBox = statusFilterComboBox;
+        this.restaurantFilterComboBox = restaurantFilterComboBox;
+        this.fromDateFilter = fromDateFilter;
+        this.toDateFilter = toDateFilter;
 
         initListeners();
     }
@@ -73,6 +87,9 @@ public class OrderTabManager {
         List<Restaurant> restaurants = customHibernate.getAllRecords(Restaurant.class);
         restaurantComboBox.setItems(FXCollections.observableList(restaurants));
         orderStatusComboBox.setItems(FXCollections.observableArrayList(OrderStatus.values()));
+        restaurantFilterComboBox.setItems(FXCollections.observableList(restaurants));
+        statusFilterComboBox.setItems(FXCollections.observableArrayList(OrderStatus.values()));
+        clientFilterComboBox.setItems(FXCollections.observableList(clients));
     }
 
     public void createOrder() {
