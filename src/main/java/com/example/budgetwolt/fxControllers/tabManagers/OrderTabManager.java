@@ -7,8 +7,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.StringConverter;
 import org.hibernate.query.Order;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,6 +92,29 @@ public class OrderTabManager {
         restaurantFilterComboBox.setItems(FXCollections.observableList(restaurants));
         statusFilterComboBox.setItems(FXCollections.observableArrayList(OrderStatus.values()));
         clientFilterComboBox.setItems(FXCollections.observableList(clients));
+
+        clientFilterComboBox.setConverter(new StringConverter<BasicUser>() {
+            @Override
+            public String toString(BasicUser client) {
+                return client.getName() + " " + client.getSurname() + " " + client.getUsername();
+            }
+
+            @Override
+            public BasicUser fromString(String string) {
+                return null;
+            }
+        });
+
+        restaurantFilterComboBox.setConverter(new StringConverter<Restaurant>() {
+            @Override
+            public String toString(Restaurant restaurant) {
+                return restaurant.getName();
+            }
+            @Override
+            public Restaurant fromString(String string) {
+                return null;
+            }
+        });
     }
 
     public void createOrder() {
@@ -141,6 +166,24 @@ public class OrderTabManager {
     }
 
 
+    public void filterOrders() {
+        Restaurant restaurant = restaurantFilterComboBox.getSelectionModel().getSelectedItem();
+        OrderStatus orderStatus = statusFilterComboBox.getValue();
+        BasicUser client = clientFilterComboBox.getSelectionModel().getSelectedItem();
+        LocalDate fromDate = fromDateFilter.getValue();
+        LocalDate toDate = toDateFilter.getValue();
 
+        List<FoodOrder> foundOrders = customHibernate.searchOrders(restaurant, orderStatus, client, fromDate, toDate);
 
+        ordersListView.setItems(FXCollections.observableList(foundOrders));
+    }
+
+    public void clearFilters() {
+        restaurantFilterComboBox.getSelectionModel().clearSelection();
+        statusFilterComboBox.getSelectionModel().clearSelection();
+        clientFilterComboBox.getSelectionModel().clearSelection();
+        fromDateFilter.setValue(null);
+        toDateFilter.setValue(null);
+
+    }
 }

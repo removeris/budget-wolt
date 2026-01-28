@@ -251,6 +251,11 @@ public class MainViewController implements Initializable {
     }
 
     public void filterOrders(ActionEvent actionEvent) {
+        orderTabManager.filterOrders();
+    }
+
+    public void clearOrderFilters(ActionEvent actionEvent) {
+        orderTabManager.clearFilters();
     }
 
     public void searchUsers(ActionEvent actionEvent) {

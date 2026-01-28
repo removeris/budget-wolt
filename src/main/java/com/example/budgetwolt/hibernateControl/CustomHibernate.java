@@ -1,8 +1,6 @@
 package com.example.budgetwolt.hibernateControl;
 
-import com.example.budgetwolt.models.BasicUser;
-import com.example.budgetwolt.models.FoodOrder;
-import com.example.budgetwolt.models.User;
+import com.example.budgetwolt.models.*;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
@@ -12,6 +10,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,7 +148,47 @@ public class CustomHibernate extends GenericHibernate {
         }
     }
 
-    public List<FoodOrder> filterOrders() {
-        return null;
+    public List<FoodOrder> searchOrders(Restaurant restaurant, OrderStatus orderStatus, BasicUser client, LocalDate fromDate, LocalDate toDate) {
+        List<FoodOrder> orders = new ArrayList<>();
+
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<FoodOrder> query = cb.createQuery(FoodOrder.class);
+            Root<FoodOrder> root = query.from(FoodOrder.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (restaurant != null) {
+                predicates.add(cb.equal(root.get("restaurant"), restaurant));
+            }
+            if (orderStatus != null) {
+                predicates.add(cb.equal(root.get("status"), orderStatus));
+            }
+            if (client != null) {
+                predicates.add(cb.equal(root.get("buyer"), client));
+            }
+
+            if (fromDate != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("dateCreated"), fromDate));
+            }
+            if (toDate != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("dateCreated"), toDate));
+            }
+
+            if (!predicates.isEmpty()) {
+                query.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+            } else {
+                query.select(root);
+            }
+
+            orders = entityManager.createQuery(query).getResultList();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) entityManager.close();
+        }
+        return orders;
     }
 }
