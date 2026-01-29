@@ -116,6 +116,8 @@ public class MainViewController implements Initializable {
     public Label restaurantLabel;
     @FXML
     public ListView<Cuisine> selectedMenuItemsListView;
+    @FXML
+    public Label restaurantLabel2;
 
 
     private EntityManagerFactory entityManagerFactory;
@@ -145,7 +147,8 @@ public class MainViewController implements Initializable {
                                                    clientComboBox, orderTitleField, orderPriceField,
                                                    restaurantComboBox, orderStatusComboBox, restaurantMenuListView,
                                                    clientFilterComboBox, statusFilterComboBox, restaurantFilterComboBox,
-                                                   fromDateFilter, toDateFilter, restaurantLabel, selectedMenuItemsListView);
+                                                   fromDateFilter, toDateFilter, restaurantLabel, selectedMenuItemsListView,
+                                                   restaurantLabel2);
         this.userTabManager = new UserTabManager(this.entityManagerFactory, customHibernate, currentUser, idCol, userTypeCol,
                                                      usernameCol, passwordCol, nameCol, surnameCol, addressCol, phoneNumCol,
                                                      userTable, usernameField, nameField, surnameField, phoneNumberField);
@@ -268,5 +271,9 @@ public class MainViewController implements Initializable {
 
     public void clearFilters(ActionEvent actionEvent) {
         userTabManager.clearFilters();
+    }
+
+    public void clearFields(ActionEvent actionEvent) {
+        orderTabManager.clearFields();
     }
 }

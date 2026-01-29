@@ -28,6 +28,7 @@ public class Cuisine {
     private String instructions;
     private boolean isSpicy;
     private boolean isVegan;
+    private boolean active = true;
 
     public Cuisine(String name, double price, String ingredients, String instructions, boolean isSpicy, boolean isVegan, Restaurant restaurant) {
         this.name = name;

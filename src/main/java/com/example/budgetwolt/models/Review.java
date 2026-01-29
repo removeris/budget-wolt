@@ -21,7 +21,9 @@ public class Review {
     private BasicUser feedbackOwner;
     @ManyToOne
     private Chat chat;
-    private int rate;
+    @ManyToOne
+    private Restaurant restaurant;
+    private double rate;
     private String text;
 
     public Review(String text, BasicUser commentOwner, Chat chat) {

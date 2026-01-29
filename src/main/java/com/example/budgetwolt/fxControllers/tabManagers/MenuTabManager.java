@@ -105,9 +105,11 @@ public class MenuTabManager {
 
     public void deleteCuisine() {
         Cuisine selectedCuisine = foodList.getSelectionModel().getSelectedItem();
-        customHibernate.delete(Cuisine.class, selectedCuisine.getId());
-
-        loadData();
+        if (selectedCuisine != null) {
+            selectedCuisine.setActive(false);
+            customHibernate.update(selectedCuisine);
+            loadData();
+        }
     }
 
     public void clearFields() {

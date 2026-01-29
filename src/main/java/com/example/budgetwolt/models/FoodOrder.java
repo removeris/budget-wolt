@@ -22,6 +22,11 @@ public class FoodOrder {
     @ManyToOne
     private BasicUser buyer;
     @ManyToMany
+    @JoinTable(
+            name = "order_items",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "cuisine_id")
+    )
     private List<Cuisine> items;
     private double price;
     @OneToOne(cascade = CascadeType.ALL)

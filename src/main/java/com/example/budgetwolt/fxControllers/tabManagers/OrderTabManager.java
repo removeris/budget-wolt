@@ -1,5 +1,6 @@
 package com.example.budgetwolt.fxControllers.tabManagers;
 
+import com.example.budgetwolt.fxControllers.FxUtil;
 import com.example.budgetwolt.hibernateControl.CustomHibernate;
 import com.example.budgetwolt.models.*;
 import javafx.collections.FXCollections;
@@ -32,6 +33,7 @@ public class OrderTabManager {
     private final DatePicker toDateFilter;
     private final Label restaurantLabel;
     private final ListView<Cuisine> selectedMenuItemsListView;
+    private final Label restaurantLabel2;
     private ObservableList<Cuisine> selectedMenuItems = FXCollections.observableArrayList();
 
     public OrderTabManager(CustomHibernate customHibernate, User currentUser,
@@ -40,7 +42,7 @@ public class OrderTabManager {
                            ComboBox<OrderStatus> orderStatusComboBox, ListView<Cuisine> restaurantMenuListView,
                            ComboBox<BasicUser> clientFilterComboBox, ComboBox<OrderStatus> statusFilterComboBox,
                            ComboBox<Restaurant> restaurantFilterComboBox, DatePicker fromDateFilter, DatePicker toDateFilter,
-                           Label restaurantLabel, ListView<Cuisine> selectedMenuItemsListView) {
+                           Label restaurantLabel, ListView<Cuisine> selectedMenuItemsListView, Label restaurantLabel2) {
 
         this.customHibernate = customHibernate;
         this.currentUser = currentUser;
@@ -58,6 +60,7 @@ public class OrderTabManager {
         this.toDateFilter = toDateFilter;
         this.restaurantLabel = restaurantLabel;
         this.selectedMenuItemsListView = selectedMenuItemsListView;
+        this.restaurantLabel2 = restaurantLabel2;
         this.selectedMenuItemsListView.setItems(selectedMenuItems);
 
         initListeners();
@@ -67,6 +70,7 @@ public class OrderTabManager {
         ordersListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 clientComboBox.setValue(newValue.getBuyer());
+                clientComboBox.setDisable(true);
                 orderTitleField.setText(newValue.getTitle());
                 orderPriceField.setText(String.valueOf(newValue.getPrice()));
                 restaurantComboBox.setValue(newValue.getRestaurant());
@@ -77,11 +81,21 @@ public class OrderTabManager {
         });
         restaurantMenuListView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                System.out.println("OOGABOOGA");
                 Cuisine selectedMenuItem = restaurantMenuListView.getSelectionModel().getSelectedItem();
                 if (selectedMenuItem != null) {
                     selectedMenuItems.add(selectedMenuItem);
+                    calculateTotalPrice(selectedMenuItem.getPrice());
                     //selectedMenuItemsListView.setItems(selectedMenuItems);
+                }
+            }
+        });
+
+        selectedMenuItemsListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Cuisine selectedMenuItem = selectedMenuItemsListView.getSelectionModel().getSelectedItem();
+                if (selectedMenuItem != null) {
+                    selectedMenuItems.remove(selectedMenuItem);
+                    calculateTotalPrice(-selectedMenuItem.getPrice());
                 }
             }
         });
@@ -97,6 +111,9 @@ public class OrderTabManager {
             orders = customHibernate.searchOrders((Restaurant) currentUser, null, null, null, null);
             restaurantFilterComboBox.setVisible(false);
             restaurantLabel.setVisible(false);
+            restaurantLabel2.setVisible(false);
+            restaurantComboBox.setVisible(false);
+
         }
         ordersListView.setItems(FXCollections.observableList(orders));
 
@@ -145,7 +162,6 @@ public class OrderTabManager {
     public void createOrder() {
         BasicUser selectedClient = clientComboBox.getSelectionModel().getSelectedItem();
         List<Cuisine> selectedItems = selectedMenuItems;
-        // TODO get items from selectedItems listview,
         double orderPrice = Double.parseDouble(orderPriceField.getText());
         Restaurant selectedRestaurant = restaurantComboBox.getSelectionModel().getSelectedItem();
 
@@ -214,5 +230,32 @@ public class OrderTabManager {
         fromDateFilter.setValue(null);
         toDateFilter.setValue(null);
 
+    }
+
+    public void calculateTotalPrice(double price) {
+
+        double total;
+
+        if (orderPriceField.getText().isEmpty()) {
+            total = price;
+        } else {
+            total = Double.parseDouble(orderPriceField.getText()) + price;
+        }
+
+        String totalString = String.format("%.2f", total);
+
+        orderPriceField.setText(totalString);
+    }
+
+    public void clearFields() {
+        ordersListView.getSelectionModel().clearSelection();
+        clientComboBox.setDisable(false);
+        orderTitleField.clear();
+        orderPriceField.clear();
+        restaurantMenuListView.getItems().clear();
+        orderStatusComboBox.getSelectionModel().clearSelection();
+        restaurantComboBox.getSelectionModel().clearSelection();
+        selectedMenuItemsListView.getItems().clear();
+        selectedMenuItems.clear();
     }
 }

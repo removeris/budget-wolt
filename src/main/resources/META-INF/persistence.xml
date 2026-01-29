@@ -10,7 +10,7 @@
                     value="jdbc:mysql://localhost:3306/budget_wolt?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
           <property name="jakarta.persistence.jdbc.user" value="root"/>
           <property name="jakarta.persistence.jdbc.password" value=""/>
-          <property name="hibernate.hbm2ddl.auto" value="update"/>
+          <property name="hibernate.hbm2ddl.auto" value="validate"/>
           <property name="hibernate.show_sql" value="true"/>
           <property name="hibernate.format_sql" value="true"/>
       </properties>

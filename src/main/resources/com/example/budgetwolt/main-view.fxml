@@ -69,7 +69,7 @@
                         <TextField fx:id="orderPriceField" layoutX="231.0" layoutY="189.0" />
                         <Label layoutX="230.0" layoutY="172.0" text="Price" />
                         <ComboBox fx:id="restaurantComboBox" layoutX="231.0" layoutY="237.0" onAction="#loadRestaurantMenu" prefWidth="150.0" />
-                        <Label layoutX="233.0" layoutY="220.0" text="Restaurant" />
+                        <Label fx:id="restaurantLabel2" layoutX="233.0" layoutY="220.0" text="Restaurant" />
                         <ComboBox fx:id="orderStatusComboBox" layoutX="230.0" layoutY="287.0" prefWidth="150.0" />
                         <Label layoutX="233.0" layoutY="270.0" text="Order Status" />
                         <ListView fx:id="restaurantMenuListView" layoutX="399.0" layoutY="94.0" prefHeight="105.0" prefWidth="376.0" />
@@ -92,6 +92,7 @@
                         <Button layoutX="719.0" layoutY="55.0" mnemonicParsing="false" onAction="#clearOrderFilters" text="Clear" />
                         <ListView fx:id="selectedMenuItemsListView" layoutX="398.0" layoutY="228.0" prefHeight="118.0" prefWidth="376.0" />
                         <Label layoutX="399.0" layoutY="212.0" text="Selected Items" />
+                        <Button layoutX="234.0" layoutY="437.0" mnemonicParsing="false" onAction="#clearFields" prefHeight="25.0" prefWidth="148.0" text="Clear Fields" />
                      </children></AnchorPane>
             </content>
           </Tab>

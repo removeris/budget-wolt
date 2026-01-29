@@ -197,9 +197,7 @@ public class CustomHibernate extends GenericHibernate {
 
             FoodOrder mergedOrder = entityManager.merge(foodOrder);
 
-            // Accessing the size() or iterator forces Hibernate to load the data
             List<Cuisine> cuisines = mergedOrder.getItems();
-            //cuisines.size();
 
             return new ArrayList<>(cuisines);
         } catch (Exception e) {
